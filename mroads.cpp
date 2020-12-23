@@ -50,6 +50,8 @@ const int oo = 1e9 + 10;
 
 int Cost(int maxD, int u = 1, int par = -1) 
 {
+    if (maxD < 0) 
+        return oo;
     if (f[u] == 0 && maxD > 0)
         return oo;
     int ret = 0;
