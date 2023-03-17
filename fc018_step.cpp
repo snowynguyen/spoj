@@ -1,6 +1,11 @@
 #include <bits/stdc++.h>
 using namespace std;
 const int N = 100002;
+mt19937 rd (chrono::high_resolution_clock::now().time_since_epoch().count());
+
+int rng (int lo, int hi) {
+    return lo + rd() % (hi - lo + 1);
+}
 
 namespace CP{
     class SegTreeNode {
@@ -86,7 +91,25 @@ namespace CP{
             for (int &x:a) cin >> x;
         }
 
-        void solve() {
+        vector<int> brute() {
+            string v = string(n + 1, 'W');
+            
+            vector<int> ans;   
+            for (int x : a) {
+                v[x] = 'B' + 'W' - v[x];
+                
+                int l = 1;
+                for (int c = 1,i=2; i<=n; ++i) {
+                    if (v[i] == v[i-1]) c++;
+                    else c = 1;
+                    l = max(l, c);
+                }
+                ans.push_back(l);
+            }
+            return ans;
+        }
+
+        vector<int> solve() {
             vector<int> y = a; 
             y.push_back(0); y.push_back(n+1);
             sort(y.begin(), y.end());
@@ -94,11 +117,14 @@ namespace CP{
             map<int, int> pos_to_segtreeid; 
             int segtreeid = 0;
             vector<int> treevalue = {0};
+            string treecolor;
             pos_to_segtreeid[0] = segtreeid++;
             for (int i=1; i<=q+1; ++i) {
                 if (y[i] == y[i-1] + 1) {
                     treevalue.push_back(1);
                     pos_to_segtreeid[y[i]] = segtreeid++;
+                } else if (y[i] == y[i-1]) {
+
                 }
                 else {
                     treevalue.push_back(y[i] - y[i-1] - 1);
@@ -108,26 +134,70 @@ namespace CP{
                 }
             }
             treevalue[segtreeid-1] = 0;
-
+            treecolor = "X" + string(segtreeid - 2, 'W') + "X";
             SegTree st(segtreeid);
 
             for (int i=0; i<segtreeid; ++i) {
-                st.update(1, 0, segtreeid, i, (i == 0 || i == (segtreeid - 1)) ? 'X' : 'W', treevalue[i]);
+                st.update(1, 0, segtreeid - 1, i, (i == 0 || i == (segtreeid - 1)) ? 'X' : 'W', treevalue[i]);
             }
 
-            cout << (st.f[1].longest);
+            vector<int> answer;
 
+            for (int x : a) {
+                int xid = pos_to_segtreeid[x];
+                treecolor[xid] = 'B' + 'W' - treecolor[xid];
+                st.update(1, 0, segtreeid - 1, xid, treecolor[xid], treevalue[xid]);
+                int best = st.f[1].longest;
+                answer.push_back(best);
+            }
+            return answer;
         }
     } ;
 
-    int main() {
+    void main() {
         Solution sol; 
         sol.input();
-        sol.solve();
+        auto ans = sol.solve();
+        for (int x : ans) cout << x << '\n';
+    }
+
+    Solution generate(int n, int q) {
+        Solution sol;
+        sol.n = n; sol.q = q;
+        sol.a = {};
+        for (int i=0; i<q; ++i) {
+            sol.a.push_back(rng(1, n));
+        }
+        return sol;
+    }
+
+    template<typename T> void print(vector<T> a, ostream &s = cout) {
+        for (auto x : a) {
+            s << x << ' ';
+        }
+        s << '\n';
+    }
+
+    void test() {
+        while(true) {
+            Solution sol = generate(9, 22); 
+            auto a = sol.brute();
+            auto b = sol.solve();
+            if (a == b) continue;
+            cout << "TEST =====================" << endl;
+            cout << sol.n << ' ' << sol.q << endl;
+            print(sol.a);
+            cout << "ANS" << endl;
+            print(a);
+            cout << "OUT" << endl;
+            print(b);
+            if (a != b) return;
+        }
     }
 }
 
 int main() 
 {
-    CP::main();
+    CP::test();
+    return 0;
 }
