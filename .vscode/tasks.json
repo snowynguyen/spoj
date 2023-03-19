@@ -12,7 +12,7 @@
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
                 "-std=c++11",
-                "-save-temps",
+                "-O2",
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
