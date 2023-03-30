@@ -3,14 +3,14 @@
         {
             "type": "shell",
             "label": "C/C++: g++.exe build active file",
-            "command": "C:\\TDM-GCC-64\\bin\\g++.exe",
+            "command": "g++.exe",
             "args": [
                 "-g",
                 "-Wl,--stack,256000000",
                 "-Wl,--heap,256000000",
-                "${file}",
+                "\"${file}\"",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "\"${fileDirname}\\${fileBasenameNoExtension}.exe\"",
                 "-std=c++11",
                 "-O2",
             ],
