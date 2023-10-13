@@ -12,6 +12,29 @@
                 "-o",
                 "\"${fileDirname}\\${fileBasenameNoExtension}.exe\"",
                 "-std=c++11",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+            }
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: g++.exe build active file with -O2",
+            "command": "g++.exe",
+            "args": [
+                "-g",
+                "-Wl,--stack,256000000",
+                "-Wl,--heap,256000000",
+                "\"${file}\"",
+                "-o",
+                "\"${fileDirname}\\${fileBasenameNoExtension}.exe\"",
+                "-std=c++11",
                 "-O2",
             ],
             "options": {
